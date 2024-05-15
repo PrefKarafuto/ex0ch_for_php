@@ -3,35 +3,35 @@
 class ZP
 {
     // CLIENT
-    // M: Mobile Browser, F: Full Browser
-    public static $C_PC = 0x00000001;
-    public static $C_P2 = 0x00000002;
-    public static $C_DOCOMO_M = 0x00000004;
-    public static $C_DOCOMO_F = 0x00000008;
-    public static $C_DOCOMO = self::$C_DOCOMO_M | self::$C_DOCOMO_F;
-    public static $C_AU_M = 0x00000010;
-    public static $C_AU_F = 0x00000020;
-    public static $C_AU = self::$C_AU_M | self::$C_AU_F;
-    public static $C_SOFTBANK_M = 0x00000040;
-    public static $C_SOFTBANK_F = 0x00000080;
-    public static $C_SOFTBANK = self::$C_SOFTBANK_M | self::$C_SOFTBANK_F;
-    public static $C_WILLCOM_M = 0x00000100;
-    public static $C_WILLCOM_F = 0x00000200;
-    public static $C_WILLCOM = self::$C_WILLCOM_M | self::$C_WILLCOM_F;
-    public static $C_EMOBILE_M = 0x00000400;
-    public static $C_EMOBILE_F = 0x00000800;
-    public static $C_EMOBILE = self::$C_EMOBILE_M | self::$C_EMOBILE_F;
-    public static $C_IBIS = 0x00001000;
-    public static $C_JIG = 0x00002000;
-    public static $C_OPERAMINI = 0x00004000;
-    public static $C_IPHONE_F = 0x00008000;
-    public static $C_IPHONEWIFI = 0x00010000;
-    public static $C_IPHONE = self::$C_IPHONE_F | self::$C_IPHONEWIFI;
-    public static $C_FBSERVICE = self::$C_IBIS | self::$C_JIG | self::$C_OPERAMINI;
-    public static $C_MOBILEBROWSER = self::$C_DOCOMO_M | self::$C_AU_M | self::$C_SOFTBANK_M | self::$C_WILLCOM_M | self::$C_EMOBILE_M;
-    public static $C_FULLBROWSER = self::$C_DOCOMO_F | self::$C_AU_F | self::$C_SOFTBANK_F | self::$C_WILLCOM_F | self::$C_EMOBILE_F | self::$C_FBSERVICE;
-    public static $C_MOBILE = self::$C_MOBILEBROWSER | self::$C_FULLBROWSER;
-    public static $C_MOBILE_IDGET = self::$C_DOCOMO_M | self::$C_AU_M | self::$C_SOFTBANK_M | self::$C_EMOBILE_M | self::$C_P2;
+    const C_PC = 0x00000001;
+    const C_P2 = 0x00000002;
+    const C_DOCOMO_M = 0x00000004;
+    const C_DOCOMO_F = 0x00000008;
+    const C_AU_M = 0x00000010;
+    const C_AU_F = 0x00000020;
+    const C_SOFTBANK_M = 0x00000040;
+    const C_SOFTBANK_F = 0x00000080;
+    const C_WILLCOM_M = 0x00000100;
+    const C_WILLCOM_F = 0x00000200;
+    const C_EMOBILE_M = 0x00000400;
+    const C_EMOBILE_F = 0x00000800;
+    const C_IBIS = 0x00001000;
+    const C_JIG = 0x00002000;
+    const C_OPERAMINI = 0x00004000;
+    const C_IPHONE_F = 0x00008000;
+    const C_IPHONEWIFI = 0x00010000;
+
+    public static $C_DOCOMO;
+    public static $C_AU;
+    public static $C_SOFTBANK;
+    public static $C_WILLCOM;
+    public static $C_EMOBILE;
+    public static $C_IPHONE;
+    public static $C_FBSERVICE;
+    public static $C_MOBILEBROWSER;
+    public static $C_FULLBROWSER;
+    public static $C_MOBILE;
+    public static $C_MOBILE_IDGET;
 
     // ERRORNUM
     public static $E_SUCCESS = 0; // must FALSE
@@ -91,8 +91,8 @@ class ZP
     public static $E_POST_NOPRODUCT = 950;
     public static $E_POST_INVALIDREFERER = 998;
     public static $E_POST_INVALIDFORM = 999;
-    public static $E_POST_NOTEXISTBBS = self::$E_POST_INVALIDFORM;
-    public static $E_POST_NOTEXISTDAT = self::$E_POST_INVALIDFORM;
+    public static $E_POST_NOTEXISTBBS;
+    public static $E_POST_NOTEXISTDAT;
     // read.cgi用エラー
     public static $E_READ_R_INVALIDBBS = 1001; // 2ch errnum
     public static $E_READ_R_INVALIDKEY = 1002; // 2ch errnum
@@ -104,7 +104,7 @@ class ZP
     public static $E_SYSTEM_ERROR = 990;
     public static $E_SYSTEM_CAPTCHAERROR = 991;
     // ページ表示用番号
-    public static $E_PAGE_FINDTHREAD = self::$E_READ_FAILEDLOADDAT;
+    public static $E_PAGE_FINDTHREAD = 1003; // self::$E_READ_FAILEDLOADDAT;
     public static $E_PAGE_THREAD = 9000;
     public static $E_PAGE_COOKIE = 9001;
     public static $E_PAGE_WRITE = 9002;
@@ -163,6 +163,28 @@ class ZP
 
     // REGEXP
     public static $RE_SJIS = '(?:[\x00-\x7f\xa1-\xdf]|[\x81-\x9f\xe0-\xef][\x40-\x7e\x80-\xfc])';
+
+    // Static initializer to set combined constants
+    public static function init()
+    {
+        self::$C_DOCOMO = self::C_DOCOMO_M | self::C_DOCOMO_F;
+        self::$C_AU = self::C_AU_M | self::C_AU_F;
+        self::$C_SOFTBANK = self::C_SOFTBANK_M | self::C_SOFTBANK_F;
+        self::$C_WILLCOM = self::C_WILLCOM_M | self::C_WILLCOM_F;
+        self::$C_EMOBILE = self::C_EMOBILE_M | self::C_EMOBILE_F;
+        self::$C_IPHONE = self::C_IPHONE_F | self::C_IPHONEWIFI;
+        self::$C_FBSERVICE = self::C_IBIS | self::C_JIG | self::C_OPERAMINI;
+        self::$C_MOBILEBROWSER = self::C_DOCOMO_M | self::C_AU_M | self::C_SOFTBANK_M | self::C_WILLCOM_M | self::C_EMOBILE_M;
+        self::$C_FULLBROWSER = self::C_DOCOMO_F | self::C_AU_F | self::C_SOFTBANK_F | self::C_WILLCOM_F | self::C_EMOBILE_F | self::$C_FBSERVICE;
+        self::$C_MOBILE = self::$C_MOBILEBROWSER | self::$C_FULLBROWSER;
+        self::$C_MOBILE_IDGET = self::C_DOCOMO_M | self::C_AU_M | self::C_SOFTBANK_M | self::C_EMOBILE_M | self::C_P2;
+
+        self::$E_POST_NOTEXISTBBS = self::$E_POST_INVALIDFORM;
+        self::$E_POST_NOTEXISTDAT = self::$E_POST_INVALIDFORM;
+    }
 }
+
+// Call the static initializer to set the combined constants
+ZP::init();
 
 ?>
