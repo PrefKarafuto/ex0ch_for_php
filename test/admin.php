@@ -1,4 +1,9 @@
 <?php
+//============================================================================================================
+//
+// システム管理スクリプト
+//
+//============================================================================================================
 
 // 必要なモジュールをインクルード
 require './module/constant.php';
@@ -12,6 +17,11 @@ require './module/update_notice.php';
 // メイン関数の実行結果を終了コードとする
 exit(AdminScript());
 
+//------------------------------------------------------------------------------------------------------------
+// admin.cgiメイン
+// @param なし
+// @return エラー番号
+//------------------------------------------------------------------------------------------------------------
 function AdminScript() {
     // IP
     if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
@@ -47,7 +57,12 @@ function AdminScript() {
     $pass = $Form->Get('PassWord', '');
     $sid = $Form->Get('SessionID', '');
     $Form->Set('PassWord', '');
-    $capt = Certification_Captcha($Sys, $Form) if ($pass && $Sys->Get('ADMINCAP'));
+
+    $capt = false;
+    if ($pass && $Sys->Get('ADMINCAP')) {
+        $capt = Certification_Captcha($Sys, $Form);
+    }
+
     list($userID, $SID) = $CGI['SECINFO']->IsLogin($name, $pass, $sid);
     if (!$capt) {
         $CGI['USER'] = $userID;
@@ -68,7 +83,9 @@ function AdminScript() {
 
     // 処理モジュールオブジェクトの生成
     $modName = $Form->Get('MODULE', 'login');
-    $modName = 'login' if (!$userID);
+    if (!$userID) {
+        $modName = 'login';
+    }
     require "./admin/$modName.php";
     $oModule = new MODULE();
 
@@ -91,6 +108,12 @@ function AdminScript() {
     return 0;
 }
 
+//------------------------------------------------------------------------------------------------------------
+// Captcha検証
+// @param $Sys システムオブジェクト
+// @param $Form フォームオブジェクト
+// @return int 認証結果
+//------------------------------------------------------------------------------------------------------------
 function Certification_Captcha($Sys, $Form) {
     $captcha_response = '';
     $url = '';
@@ -136,6 +159,11 @@ function Certification_Captcha($Sys, $Form) {
     }
 }
 
+//------------------------------------------------------------------------------------------------------------
+// 管理システム設定
+// @param $CGI システム管理ハッシュの参照
+// @return なし
+//------------------------------------------------------------------------------------------------------------
 function SystemSetting(&$CGI) {
     $CGI = [
         'SECINFO' => null,
